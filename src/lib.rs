@@ -2,13 +2,14 @@
 
 extern crate libc;
 
-use libc::{c_void,c_char,c_uchar,c_short,c_ushort,c_int,c_uint,c_ulonglong,c_float,c_double,size_t,time_t};
+use libc::{c_void,c_char,c_uchar,c_short,c_ushort,c_int,c_uint,c_float,c_double,size_t,time_t};
 
 #[repr(C)]
 pub struct libraw_data_t {
     pub image: *mut [c_ushort; 4],
     pub sizes: libraw_image_sizes_t,
     pub idata: libraw_iparams_t,
+    #[cfg(have_lensinfo)]
     pub lens: libraw_lensinfo_t,
     pub params: libraw_output_params_t,
     pub progress_flags: c_uint,
@@ -40,19 +41,25 @@ pub struct libraw_image_sizes_t {
 pub struct libraw_iparams_t {
     pub make: [c_char; 64],
     pub model: [c_char; 64],
+    #[cfg(have_iparams_software)]
     pub software: [c_char; 64],
     pub raw_count: c_uint,
     pub dng_version: c_uint,
     pub is_foveon: c_uint,
     pub colors: c_int,
     pub filters: c_uint,
+    #[cfg(have_iparams_xtrans)]
     pub xtrans: [[c_char; 6]; 6],
+    #[cfg(have_iparams_xtrans_abs)]
     pub xtrans_abs: [[c_char; 6]; 6],
     pub cdesc: [c_char; 5],
+    #[cfg(have_iparams_xmplen)]
     pub xmplen: c_uint,
+    #[cfg(have_iparams_xmpdata)]
     pub xmpdata: *mut c_char,
 }
 
+#[cfg(have_lensinfo)]
 #[repr(C)]
 pub struct libraw_lensinfo_t {
     pub MinFocal: c_float,
@@ -68,6 +75,7 @@ pub struct libraw_lensinfo_t {
     pub makernotes: libraw_makernotes_lens_t,
 }
 
+#[cfg(have_nikonlens)]
 #[repr(C)]
 pub struct libraw_nikonlens_t {
     pub NikonEffectiveMaxAp: c_float,
@@ -77,6 +85,7 @@ pub struct libraw_nikonlens_t {
     pub NikonLensType: c_uchar,
 }
 
+#[cfg(have_dnglens)]
 #[repr(C)]
 pub struct libraw_dnglens_t {
     pub MinFocal: c_float,
@@ -85,13 +94,14 @@ pub struct libraw_dnglens_t {
     pub MaxAp4MaxFocal: c_float,
 }
 
+#[cfg(have_makernotes_lens)]
 #[repr(C)]
 pub struct libraw_makernotes_lens_t {
-    pub LensID: c_ulonglong,
+    pub LensID: libc::c_ulonglong,
     pub Lens: [c_char; 128],
     pub LensFormat: c_ushort,
     pub LensMount: c_ushort,
-    pub CamID: c_ulonglong,
+    pub CamID: libc::c_ulonglong,
     pub CameraFormat: c_ushort,
     pub CameraMount: c_ushort,
     pub body: [c_char; 64],
@@ -111,11 +121,11 @@ pub struct libraw_makernotes_lens_t {
     pub MaxAp4CurFocal: c_float,
     pub MinAp4CurFocal: c_float,
     pub LensFStops: c_float,
-    pub TeleconverterID: c_ulonglong,
+    pub TeleconverterID: libc::c_ulonglong,
     pub Teleconverter: [c_char; 128],
-    pub AdapterID: c_ulonglong,
+    pub AdapterID: libc::c_ulonglong,
     pub Adapter: [c_char; 128],
-    pub AttachmentID: c_ulonglong,
+    pub AttachmentID: libc::c_ulonglong,
     pub Attachment: [c_char; 128],
     pub CanonFocalUnits: c_short,
     pub FocalLengthIn35mmFormat: c_float,
@@ -148,6 +158,8 @@ pub struct libraw_output_params_t {
     pub user_qual: c_int,
     pub user_black: c_int,
     pub user_cblack: [c_int; 4],
+    #[cfg(have_output_params_sony_arw2_hack)]
+    pub sony_arw2_hack: c_int,
     pub user_sat: c_int,
     pub med_passes: c_int,
     pub auto_bright_thr: c_float,
@@ -155,6 +167,18 @@ pub struct libraw_output_params_t {
     pub no_auto_bright: c_int,
     pub use_fuji_rotate: c_int,
     pub green_matching: c_int,
+
+    #[cfg(have_output_params_afd_noise_att)]
+    pub afd_noise_att: c_int,
+    #[cfg(have_output_params_afd_noise_thres)]
+    pub afd_noise_thres: c_int,
+    #[cfg(have_output_params_afd_luminance_passes)]
+    pub afd_luminance_passes: c_int,
+    #[cfg(have_output_params_afd_chrominance_method)]
+    pub afd_chrominance_method: c_int,
+    #[cfg(have_output_params_afd_luminance_only)]
+    pub afd_luminance_only: c_int,
+
     pub dcb_iterations: c_int,
     pub dcb_enhance_fl: c_int,
     pub fbdd_noiserd: c_int,
@@ -176,20 +200,35 @@ pub struct libraw_output_params_t {
     pub wf_debanding: c_int,
     pub wf_deband_treshold: [c_float; 4],
     pub use_rawspeed: c_int,
+
+    #[cfg(have_output_params_no_auto_scale)]
     pub no_auto_scale: c_int,
+    #[cfg(have_output_params_no_interpolation)]
     pub no_interpolation: c_int,
+    #[cfg(have_output_params_sraw_ycc)]
     pub sraw_ycc: c_int,
+    #[cfg(have_output_params_force_foveon_x3f)]
     pub force_foveon_x3f: c_int,
+    #[cfg(have_output_params_x3f_flags)]
     pub x3f_flags: c_int,
+    #[cfg(have_output_params_sony_arw2_options)]
     pub sony_arw2_options: c_int,
+    #[cfg(have_output_params_sony_arw2_posterization_thr)]
     pub sony_arw2_posterization_thr: c_int,
+    #[cfg(have_output_params_coolscan_nef_gamma)]
     pub coolscan_nef_gamma: c_float,
 }
 
 #[repr(C)]
 pub struct libraw_colordata_t {
     pub curve: [c_ushort; 0x10000],
+
+    // this field changed size around the same time that sony_arw2_hack was removed
+    #[cfg(not(have_output_params_sony_arw2_hack))]
     pub cblack: [c_uint; 4102],
+    #[cfg(have_output_params_sony_arw2_hack)]
+    pub cblack: [c_uint; 4],
+
     pub black: c_uint,
     pub data_maximum: c_uint,
     pub maximum: c_uint,
@@ -205,15 +244,36 @@ pub struct libraw_colordata_t {
     pub model2: [c_char; 64],
     pub profile: *mut c_void,
     pub profile_length: c_uint,
+
+    #[cfg(have_colordata_black_stat)]
     pub black_stat: [c_uint; 8],
+    #[cfg(have_dng_color)]
     pub dng_color: [libraw_dng_color_t; 2],
+    #[cfg(have_canon_makernotes)]
     pub canon_makernotes: libraw_canon_makernotes_t,
+    #[cfg(have_colordata_baseline_exposure)]
     pub baseline_exposure: c_float,
+    #[cfg(have_colordata_olympus_sensor_calibration)]
     pub OlympusSensorCalibration: [c_int; 2],
+    #[cfg(have_colordata_fuji_expo_mid_point_shift)]
     pub FujiExpoMidPointShift: c_float,
+    #[cfg(have_colordata_digital_back_color)]
     pub digitalBack_color: c_int,
 }
 
+#[cfg(have_ph1_black_off)]
+#[repr(C)]
+pub struct ph1_t {
+    pub format: c_int,
+    pub key_off: c_int,
+    pub t_black: c_int,
+    pub black_off: c_int,
+    pub split_col: c_int,
+    pub tag_21a: c_int,
+    pub tag_210: c_float,
+}
+
+#[cfg(not(have_ph1_black_off))]
 #[repr(C)]
 pub struct ph1_t {
     pub format: c_int,
@@ -227,6 +287,7 @@ pub struct ph1_t {
     pub tag_210: c_float,
 }
 
+#[cfg(have_dng_color)]
 #[repr(C)]
 pub struct libraw_dng_color_t {
     pub illuminant: c_ushort,
@@ -234,6 +295,7 @@ pub struct libraw_dng_color_t {
     pub colormatrix: [[c_float; 3]; 4],
 }
 
+#[cfg(have_canon_makernotes)]
 #[repr(C)]
 pub struct libraw_canon_makernotes_t {
     pub CanonColorDataVer: c_int,
@@ -251,11 +313,13 @@ pub struct libraw_imgother_t {
     pub timestamp: time_t,
     pub shot_order: c_uint,
     pub gpsdata: [c_uint; 32],
+    #[cfg(have_gps_info)]
     pub parsed_gps: libraw_gps_info_t,
     pub desc: [c_char; 512],
     pub artist: [c_char; 64],
 }
 
+#[cfg(have_gps_info)]
 #[repr(C)]
 pub struct libraw_gps_info_t {
     pub latitude: [c_float; 3],
@@ -286,6 +350,7 @@ pub struct libraw_rawdata_t {
     pub color4_image: *mut [c_ushort; 4],
     pub color3_image: *mut [c_ushort; 3],
     pub ph1_cblack: *mut [c_short; 2],
+    #[cfg(have_rawdata_ph1_rblack)]
     pub ph1_rblack: *mut [c_short; 2],
     pub iparams: libraw_iparams_t,
     pub sizes: libraw_image_sizes_t,
