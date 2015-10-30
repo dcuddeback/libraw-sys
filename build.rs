@@ -7,7 +7,7 @@ use std::path::Path;
 use std::io::prelude::*;
 
 fn main() {
-    let libraw = pkg_config::find_library("libraw_r").unwrap();
+    let libraw = pkg_config::Config::new().atleast_version("0.15.0").find("libraw_r").unwrap();
 
     // libraw_iparams_t members
 
