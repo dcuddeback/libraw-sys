@@ -5,7 +5,7 @@ The `libraw-sys` crate provides declarations and linkage for the `libraw` C libr
 the native `libraw` library functions.
 
 ## Dependencies
-In order to use the `libraw-sys` crate, you must have  the `libraw_r` library installed where it can
+In order to use the `libraw-sys` crate, you must have the `libraw_r` library installed where it can
 be found by `pkg-config`. `libraw_r` is the reentrant version of LibRaw.
 
 On Debian-based Linux distributions, install the `libraw-dev` package:
