@@ -1,0 +1,82 @@
+use libc::*;
+
+#[repr(C)]
+pub struct libraw_iparams_t {
+    pub guard: [c_char; 4usize],
+    pub make: [c_char; 64usize],
+    pub model: [c_char; 64usize],
+    pub software: [c_char; 64usize],
+    pub normalized_make: [c_char; 64usize],
+    pub normalized_model: [c_char; 64usize],
+    pub maker_index: c_uint,
+    pub raw_count: c_uint,
+    pub dng_version: c_uint,
+    pub is_foveon: c_uint,
+    pub colors: c_int,
+    pub filters: c_uint,
+    pub xtrans: [[c_char; 6usize]; 6usize],
+    pub xtrans_abs: [[c_char; 6usize]; 6usize],
+    pub cdesc: [c_char; 5usize],
+    pub xmplen: c_uint,
+    pub xmpdata: *mut c_char,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct libraw_output_params_t {
+    pub greybox: [c_uint; 4usize],
+    pub cropbox: [c_uint; 4usize],
+    pub aber: [f64; 4usize],
+    pub gamm: [f64; 6usize],
+    pub user_mul: [f32; 4usize],
+    pub bright: f32,
+    pub threshold: f32,
+    pub half_size: c_int,
+    pub four_color_rgb: c_int,
+    pub highlight: c_int,
+    pub use_auto_wb: c_int,
+    pub use_camera_wb: c_int,
+    pub use_camera_matrix: c_int,
+    pub output_color: c_int,
+    pub output_profile: *mut c_char,
+    pub camera_profile: *mut c_char,
+    pub bad_pixels: *mut c_char,
+    pub dark_frame: *mut c_char,
+    pub output_bps: c_int,
+    pub output_tiff: c_int,
+    pub output_flags: c_int,
+    pub user_flip: c_int,
+    pub user_qual: c_int,
+    pub user_black: c_int,
+    pub user_cblack: [c_int; 4usize],
+    pub user_sat: c_int,
+    pub med_passes: c_int,
+    pub auto_bright_thr: f32,
+    pub adjust_maximum_thr: f32,
+    pub no_auto_bright: c_int,
+    pub use_fuji_rotate: c_int,
+    pub green_matching: c_int,
+    pub dcb_iterations: c_int,
+    pub dcb_enhance_fl: c_int,
+    pub fbdd_noiserd: c_int,
+    pub exp_correc: c_int,
+    pub exp_shift: f32,
+    pub exp_preser: f32,
+    pub no_auto_scale: c_int,
+    pub no_interpolation: c_int,
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct libraw_raw_unpack_params_t {
+    pub use_rawspeed: c_int,
+    pub use_dngsdk: c_int,
+    pub options: c_uint,
+    pub shot_select: c_uint,
+    pub specials: c_uint,
+    pub max_raw_memory_mb: c_uint,
+    pub sony_arw2_posterization_thr: c_int,
+    pub coolscan_nef_gamma: f32,
+    pub p4shot_order: [c_char; 5usize],
+    pub custom_camera_strings: *mut *mut c_char,
+}
