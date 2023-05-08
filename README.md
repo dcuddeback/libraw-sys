@@ -2,7 +2,10 @@
 
 The `libraw-sys` crate provides declarations and linkage for the `libraw` C library. Following the
 `*-sys` package conventions, the `libraw-sys` crate does not define higher-level abstractions over
-the native `libraw` library functions.
+the native `libraw` library functions.  
+
+Current `libraw` C library version: 0.21.1-Release  
+*Note:* the `libraw` C library may introduce breaking changes which in turn could change the current `libraw-sys` crate to be incompatible with older versions. It therefore is recommended to specifiy the `libraw-sys` version in the `Cargo.toml` file
 
 ## Dependencies
 In order to use the `libraw-sys` crate, you must have the `libraw_r` library installed where it can
@@ -31,7 +34,7 @@ Add `libraw-sys` as a dependency in `Cargo.toml`:
 
 ```toml
 [dependencies]
-libraw-sys = "0.1"
+libraw-sys = "0.2"
 ```
 
 Import the `libraw_sys` crate and use the functions as they're defined in the native `libraw`
@@ -49,7 +52,7 @@ source for help is the information already available for the native `libraw`:
 * [Source Code](https://github.com/LibRaw/LibRaw)
 
 ## License
-Copyright © 2015 David Cuddeback
+Copyright © 2023 David Cuddeback
 
 Distributed under the [MIT License](LICENSE).
 
